@@ -7,12 +7,15 @@ using FFXIVClientStructs.FFXIV.Component.GUI;
 
 namespace SamplePlugin;
 
-// Draws a yellow box over every item slot in the open glamour dresser page whose item shares its model with another item.
+// Draws a box over every item slot in the open glamour dresser page whose item shares its model with another item:
+// yellow for true duplicates (exact same model), cyan for variants (same base model, different variant).
 public sealed unsafe class DuplicateHighlightOverlay : IDisposable
 {
     private const float BoxThickness = 3f;
     // ImGui colours are packed as 0xAABBGGRR, so this is opaque yellow (R=FF, G=D8, B=00).
-    private const uint BoxColor = 0xFF00D8FF;
+    private const uint DuplicateColor = 0xFF00D8FF;
+    // Opaque cyan (R=00, G=FF, B=FF).
+    private const uint VariantColor = 0xFFFFFF00;
 
     private readonly GlamourDresserReader reader;
 
@@ -27,7 +30,8 @@ public sealed unsafe class DuplicateHighlightOverlay : IDisposable
     private void Draw()
     {
         var duplicates = reader.DuplicateItemIds;
-        if (duplicates.Count == 0)
+        var variants = reader.VariantItemIds;
+        if (duplicates.Count == 0 && variants.Count == 0)
             return;
 
         var addon = (AddonMiragePrismPrismBox*)Plugin.GameGui.GetAddonByName(GlamourDresserReader.DresserAddonName).Address;
@@ -53,7 +57,12 @@ public sealed unsafe class DuplicateHighlightOverlay : IDisposable
                 continue;
 
             var itemId = GlamourDresserReader.StripHq(data->PrismBoxItems[itemIndex].ItemId);
-            if (!duplicates.Contains(itemId))
+            uint color;
+            if (duplicates.Contains(itemId))
+                color = DuplicateColor;
+            else if (variants.Contains(itemId))
+                color = VariantColor;
+            else
                 continue;
 
             var button = itemSlots[i].Button;
@@ -65,7 +74,7 @@ public sealed unsafe class DuplicateHighlightOverlay : IDisposable
                 continue;
 
             var (min, max) = GetScreenBounds(node);
-            drawList.AddRect(min + viewportOffset, max + viewportOffset, BoxColor, 4f, ImDrawFlags.None, BoxThickness);
+            drawList.AddRect(min + viewportOffset, max + viewportOffset, color, 4f, ImDrawFlags.None, BoxThickness);
         }
     }
 

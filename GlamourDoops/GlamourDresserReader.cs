@@ -26,8 +26,12 @@ public sealed unsafe class GlamourDresserReader : IDisposable
     private bool dresserOpen;
     private uint[] lastItemIds = [];
 
-    // Item ids (without the HQ offset) of every dresser item that shares its model with another dresser item.
+    // Item ids (without the HQ offset) of every dresser item whose exact model, variant included, matches another dresser item.
     public IReadOnlySet<uint> DuplicateItemIds { get; private set; } = new HashSet<uint>();
+
+    // Item ids (without the HQ offset) of every dresser item that shares its base model with another dresser item,
+    // but only in a different variant. Never overlaps with DuplicateItemIds.
+    public IReadOnlySet<uint> VariantItemIds { get; private set; } = new HashSet<uint>();
 
     public GlamourDresserReader()
     {
@@ -117,18 +121,37 @@ public sealed unsafe class GlamourDresserReader : IDisposable
             group.Add((slot, item));
         }
 
-        var duplicateGroups = modelGroups.Values.Where(g => g.Count > 1).ToList();
-        DuplicateItemIds = duplicateGroups.SelectMany(g => g.Select(entry => entry.Item.RowId)).ToHashSet();
+        var sharedModelGroups = modelGroups.Values.Where(g => g.Count > 1).ToList();
+
+        // Within each shared base model, items on the exact same model (variant included) are true duplicates;
+        // the rest only differ from them by variant.
+        var duplicateGroups = sharedModelGroups
+            .SelectMany(g => g.GroupBy(entry => (entry.Item.ModelMain, entry.Item.ModelSub)))
+            .Where(g => g.Count() > 1)
+            .ToList();
+        var duplicateIds = duplicateGroups.SelectMany(g => g.Select(entry => entry.Item.RowId)).ToHashSet();
+        DuplicateItemIds = duplicateIds;
+        VariantItemIds = sharedModelGroups
+            .SelectMany(g => g.Select(entry => entry.Item.RowId))
+            .Where(id => !duplicateIds.Contains(id))
+            .ToHashSet();
 
         Plugin.Log.Information($"Glamour dresser contains {count} item(s).");
         foreach (var group in duplicateGroups)
         {
             var names = string.Join(", ", group.Select(entry => $"{entry.Item.Name} (slot {entry.Slot})"));
-            Plugin.Log.Information($"Same model: {names}");
+            Plugin.Log.Information($"Exact same model: {names}");
+        }
+
+        foreach (var group in sharedModelGroups.Where(g => g.Any(entry => VariantItemIds.Contains(entry.Item.RowId))))
+        {
+            var names = string.Join(", ", group.Select(entry => $"{entry.Item.Name} (slot {entry.Slot}, {FormatModel(entry.Item)})"));
+            Plugin.Log.Information($"Same model, different variants: {names}");
         }
 
         Plugin.ChatGui.Print(
-            $"Read {count} glamour dresser item(s), {duplicateGroups.Count} duplicate model group(s). Type /xllog for details.");
+            $"Read {count} glamour dresser item(s): {DuplicateItemIds.Count} true duplicate(s), " +
+            $"{VariantItemIds.Count} variant(s). Type /xllog for details.");
     }
 
     // ModelMain/ModelSub pack several ids into one number, laid out differently for weapons (incl. shields) and armor.
