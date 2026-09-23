@@ -7,8 +7,8 @@
     <Name>GlamourDoops</Name>
     <Punchline>Checks for duplicate glamour models and highlights them.</Punchline>
     <Description>Checks for duplicate glamour models and highlights them.</Description>
-    <RepoUrl>https://github.com/goatcorp/SamplePlugin</RepoUrl>
-    <Tags>sample;plugin;goats</Tags>
+    <RepoUrl>https://github.com/dev997/GlamourDoops</RepoUrl>
+    <Tags>Duplicate;Glamour</Tags>
   </PropertyGroup>
 
   <ItemGroup>
