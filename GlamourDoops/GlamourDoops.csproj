@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Dalamud.NET.Sdk/15.0.0">
+  <PropertyGroup>
+    <Version>0.0.0.1</Version>
+    <!-- Manifest fields (see https://github.com/goatcorp/DalamudPackager/blob/827d88dc/DalamudPackager/DalamudPackager.cs#L420) -->
+    <Author>OniTurtle</Author>
+    <Name>GlamourDoops</Name>
+    <Punchline>Checks for duplicate glamour models and highlights them.</Punchline>
+    <Description>Checks for duplicate glamour models and highlights them.</Description>
+    <RepoUrl>https://github.com/goatcorp/SamplePlugin</RepoUrl>
+    <Tags>sample;plugin;goats</Tags>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="..\Data\goat.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </Content>
+  </ItemGroup>
+</Project>
