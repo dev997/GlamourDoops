@@ -18,9 +18,9 @@
     "LoadPriority": 0,
     "LoadRequiredState": 0,
     "LoadSync": false,
-    "DownloadLinkInstall": "https://github.com/dev997/GlamourDoops/releases/download/1.0.0/GlamourDoops.zip",
-    "DownloadLinkTesting": "https://github.com/dev997/GlamourDoops/releases/download/1.0.0/GlamourDoops.zip",
-    "DownloadLinkUpdate": "https://github.com/dev997/GlamourDoops/releases/download/1.0.0/GlamourDoops.zip",
+    "DownloadLinkInstall": "https://github.com/dev997/GlamourDoops/releases/download/1.0.2/GlamourDoops.zip",
+    "DownloadLinkTesting": "https://github.com/dev997/GlamourDoops/releases/download/1.0.2/GlamourDoops.zip",
+    "DownloadLinkUpdate": "https://github.com/dev997/GlamourDoops/releases/download/1.0.2/GlamourDoops.zip",
     "IconUrl": "https://raw.githubusercontent.com/dev997/GlamourDoops/main/Data/goat.png",
     "Tags": [
       "Duplicate", "Glamour"
