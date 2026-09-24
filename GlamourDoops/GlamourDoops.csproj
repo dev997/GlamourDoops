@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Dalamud.NET.Sdk/15.0.0">
   <PropertyGroup>
-    <Version>0.0.3.0</Version>
+    <Version>0.0.4.0</Version>
     <!-- Manifest fields (see https://github.com/goatcorp/DalamudPackager/blob/827d88dc/DalamudPackager/DalamudPackager.cs#L420) -->
     <Author>OniTurtle</Author>
     <Name>GlamourDoops</Name>
@@ -9,6 +9,7 @@
     <Description>Checks for duplicate glamour models and highlights them.</Description>
     <RepoUrl>https://github.com/dev997/GlamourDoops</RepoUrl>
     <Tags>Duplicate;Glamour</Tags>
+    <IconUrl>https://raw.githubusercontent.com/dev997/GlamourDoops/main/Data/icon.png</IconUrl>
   </PropertyGroup>
 
   <ItemGroup>
