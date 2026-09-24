@@ -46,7 +46,7 @@ public sealed class Plugin : IDalamudPlugin
         WindowSystem.AddWindow(MainWindow);
 
         GlamourDresserReader = new GlamourDresserReader();
-        DuplicateHighlightOverlay = new DuplicateHighlightOverlay(GlamourDresserReader);
+        DuplicateHighlightOverlay = new DuplicateHighlightOverlay(GlamourDresserReader, Configuration);
 
         CommandManager.AddHandler(CommandName, new CommandInfo(OnCommand)
         {

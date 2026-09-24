@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Numerics;
 using Dalamud.Bindings.ImGui;
 using FFXIVClientStructs.FFXIV.Client.UI;
@@ -17,11 +18,15 @@ public sealed unsafe class DuplicateHighlightOverlay : IDisposable
     // Opaque cyan (R=00, G=FF, B=FF).
     private const uint VariantColor = 0xFFFFFF00;
 
-    private readonly GlamourDresserReader reader;
+    private static readonly IReadOnlySet<uint> NoItems = new HashSet<uint>();
 
-    public DuplicateHighlightOverlay(GlamourDresserReader reader)
+    private readonly GlamourDresserReader reader;
+    private readonly Configuration configuration;
+
+    public DuplicateHighlightOverlay(GlamourDresserReader reader, Configuration configuration)
     {
         this.reader = reader;
+        this.configuration = configuration;
         Plugin.PluginInterface.UiBuilder.Draw += Draw;
     }
 
@@ -30,7 +35,7 @@ public sealed unsafe class DuplicateHighlightOverlay : IDisposable
     private void Draw()
     {
         var duplicates = reader.DuplicateItemIds;
-        var variants = reader.VariantItemIds;
+        var variants = configuration.HighlightVariants ? reader.VariantItemIds : NoItems;
         if (duplicates.Count == 0 && variants.Count == 0)
             return;
 
